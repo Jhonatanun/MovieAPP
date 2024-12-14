@@ -1,36 +1,67 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Asegúrate de instalar react-native-vector-icons
 
-const LoginScreen = () => {
+
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ToastAndroid } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Asegúrate de instalar react-native-vector-icons
+import { useAuth } from '../context/AuthContext'; // Importa el hook
+
+
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { setIsLoggedIn } = useAuth(); // Usar el contexto
+
+  // Función para manejar el login
+  const handleLogin = async () => {
+    setLoading(true);
+    
+    // Simulando un inicio de sesión (reemplazar con la lógica real de API)
+    const validEmail = 'user@example.com';
+    const validPassword = 'password123';
+
+    if (email === validEmail && password === validPassword) {
+      // Aquí guardarías el token de sesión en AsyncStorage o en un Context para gestión de sesión
+      ToastAndroid.show('¡Inicio de sesión exitoso!', ToastAndroid.SHORT);
+      setIsLoggedIn(true); // Cambiar el estado a autenticado
+    } else {
+      ToastAndroid.show('Credenciales incorrectas', ToastAndroid.SHORT);
+    }
+    setLoading(false);
+  };
+
   return (
     <View style={styles.container}>
-      
-      {/* Logo de IMDb */}
-      <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>IMDb</Text>
-      </View>
+      <Text style={styles.logoText}>IMDb</Text>
       
       {/* Formulario de usuario y contraseña */}
       <View style={styles.formContainer}>
         <TextInput
-          placeholder="Usuario"
+          placeholder="Correo"
           placeholderTextColor="#4B4747"
           style={styles.input}
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput
           placeholder="Contraseña"
           placeholderTextColor="#4B4747"
           secureTextEntry={true}
           style={styles.input}
+          value={password}
+          onChangeText={setPassword}
         />
         <TouchableOpacity>
           <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
         </TouchableOpacity>
         
         {/* Botón de Login */}
-        <TouchableOpacity style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>Login</Text>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={handleLogin}
+          disabled={loading} // Deshabilitar el botón mientras se procesa el login
+        >
+          <Text style={styles.loginButtonText}>{loading ? 'Cargando...' : 'Login'}</Text>
         </TouchableOpacity>
       </View>
       
@@ -61,7 +92,6 @@ const LoginScreen = () => {
           <Text style={styles.guestText}>Continuar como invitado</Text>
         </TouchableOpacity>
       </View>
-      
     </View>
   );
 };
@@ -72,16 +102,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6C700', // Color amarillo de fondo
     paddingHorizontal: 20,
   },
-  logoContainer: {
-    alignItems: 'center',
-    marginTop: 60,
-    marginBottom: 40,
-  },
   logoText: {
     fontFamily: 'Roboto-Bold',
     fontSize: 50,
     color: '#000000',
-    fontWeight:'bold'
+    fontWeight:'bold',
+    textAlign: 'center',
+    marginTop: 60,
   },
   formContainer: {
     backgroundColor: '#F6C700',
@@ -157,3 +184,5 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
+

@@ -3,12 +3,13 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useAuth } from '../context/AuthContext'; // Importa el hook
+
 
 import HomeScreen  from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SearchScreen from '../screens/SearchScreen';
 import MovieDetailsScreen from '../screens/MovieDetailsScreen';
-import ToastExample from '../screens/ComponentToastExample';
 
 
 
@@ -37,6 +38,18 @@ function SearchStackNavigator() {
 }
 
 function AppNavigation() {
+
+  const { isLoggedIn } = useAuth(); // Obtener el estado de autenticación
+
+  if (!isLoggedIn) {
+    // Mostrar solo la pantalla de login si no está autenticado
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    );
+  }
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -65,7 +78,7 @@ function AppNavigation() {
     >
       <Tab.Screen name="Inicio" component={HomeStackNavigator} />
       <Tab.Screen name="Buscar" component={SearchStackNavigator} />
-      <Tab.Screen name="Perfil" component={ToastExample} />
+      <Tab.Screen name="Perfil" component={LoginScreen} />
     </Tab.Navigator>
   );
 }
