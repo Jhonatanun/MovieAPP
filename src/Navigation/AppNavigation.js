@@ -2,6 +2,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { StatusBar } from 'react-native'; // Importa el componente StatusBar
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../context/AuthContext'; // Importa el hook
 
@@ -23,6 +25,7 @@ function HomeStackNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} options={{ title: 'Detalles de la película' }} />
       {/* Agrega más pantallas relacionadas a Home aquí si es necesario */}
     </Stack.Navigator>
   );
@@ -44,13 +47,20 @@ function AppNavigation() {
   if (!isLoggedIn) {
     // Mostrar solo la pantalla de login si no está autenticado
     return (
+      <>
+
+      <StatusBar backgroundColor="#f6c700" barStyle="dark-content" /> 
       <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
+
+      </>
     );
   }
 
   return (
+    <>
+    <StatusBar backgroundColor="#f6c700" barStyle="dark-content" />
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
@@ -59,20 +69,18 @@ function AppNavigation() {
           else if (route.name === 'Buscar') iconName = 'search';
           else if (route.name === 'Perfil') iconName = 'person';
 
-          return <Icon name={iconName} size={size} color={color} />;
+          return < Icon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
-        
-
         tabBarStyle: {
           backgroundColor: '#f6c700', // Color de fondo
           paddingBottom: 5,
           height: 60, // Ajusta la altura de la barra
           borderTopWidth: 0, // Elimina el borde superior
-          borderTopEndRadius:27,
-          borderTopStartRadius:27
+          borderTopEndRadius:0,
+          borderTopStartRadius:0
         }
       })}
     >
@@ -80,6 +88,7 @@ function AppNavigation() {
       <Tab.Screen name="Buscar" component={SearchStackNavigator} />
       <Tab.Screen name="Perfil" component={LoginScreen} />
     </Tab.Navigator>
+    </>
   );
 }
 
